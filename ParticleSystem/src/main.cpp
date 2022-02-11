@@ -1,7 +1,12 @@
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-         
-#include <iostream>
+#include<GL/glew.h>
+#include<GLFW/glfw3.h>
+
+#include<glm/glm.hpp>
+#include<glm/gtc/matrix_transform.hpp>
+#include<glm/gtc/type_ptr.hpp>
+        
+#include<iostream>
+#include"emitter.h"
 
 void processInput(GLFWwindow* window)
 {
@@ -19,7 +24,7 @@ int main(void)
     GLFWwindow* window;
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(800, 600, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(800, 600, "Particles!!", NULL, NULL);
     if (!window)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -38,13 +43,17 @@ int main(void)
 
     glViewport(0, 0, 800, 600);
 
+    emitter particleEmitter;
+
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
-        glClearColor(0.5, 0.7, 0.5, 1);
+        glClearColor(0.1882, 0.1882, 0.1882, 1);
 
+        particleEmitter.update();
+        particleEmitter.draw();
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
