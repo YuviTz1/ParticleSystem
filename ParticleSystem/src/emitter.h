@@ -4,21 +4,24 @@
 #include<glm/glm.hpp>
 #include<glm/gtc/matrix_transform.hpp>
 #include<glm/gtc/type_ptr.hpp>
+
+#include<vector>
+
 #include"shader_class.h"
 #include"utility.h"
+#include"particle.h"
 
 class emitter
 {
 public:
 
-	int numParticles = 100;
+	int numParticles = 300;
 	float dt = 0.0001;					//fall down speed
-	float previousTime = 0;			//previous frame time used for updating lifetimes
+	float previousTime = 0;				//previous frame time used for updating lifetimes
 
-	glm::vec3 translations[2000];		//position offset of particles
-	float lifetimes[2000];
+	std::vector<particle> particleVec;
 
-	unsigned int VBO;					
+	unsigned int VBO;								  
 	unsigned int VAO;
 	unsigned int instancedTranslationVBO;
 
