@@ -6,14 +6,16 @@ emitter::emitter()
 	for (int i = 0; i < numParticles; i++)
 	{
 		//randomise particle starting position, lifetime and force
-		particleVec[i].position.x = random_number_between(-0.1f, 0.1f);
-		particleVec[i].position.y = random_number_between(-0.9f, -0.8f);
+		particleVec[i].position.x = random_number_between(-0.6f, -0.5f);
+		particleVec[i].position.y = random_number_between(-1.0f, -0.8f);
 		particleVec[i].position.z = 0;
 		particleVec[i].lifetime = random_number_between(3.0f, 6.0f);
 
 		particleVec[i].force.x = random_number_between(-0.00004, 0.00004);
 		particleVec[i].force.y = random_number_between(0.00014, 0.00025);
 		particleVec[i].force.z = 0;
+
+		particleVec[i].force *= forceMultiplier;
 	}
 
 	float quadVertices[] = {
@@ -44,6 +46,7 @@ emitter::emitter()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	previousTime = glfwGetTime();
+	scaleMat = glm::scale(scaleMat, glm::vec3(1.0f, 1.0f, 1.0f));
 }
 
 void emitter::update()
@@ -57,23 +60,36 @@ void emitter::update()
 		//respawn dead particle with new position, lifetime and force
 		if (particleVec[i].lifetime <= 0)
 		{
-			particleVec[i].position.x = random_number_between(-0.1f, 0.1f);
-			particleVec[i].position.y = random_number_between(-0.9f, -0.8f);
+			particleVec[i].position.x = random_number_between(-0.6f, -0.5f);
+			particleVec[i].position.y = random_number_between(-1.0f, -0.8f);
 			particleVec[i].position.z = 0;
 			particleVec[i].lifetime = random_number_between(3.0f, 6.0f);
 
 			particleVec[i].force.x = random_number_between(-0.00004, 0.00004);
 			particleVec[i].force.y = random_number_between(0.00014, 0.00025);
 			particleVec[i].force.z = 0;
+
+			particleVec[i].force *= forceMultiplier;
 		}
 	}
 
 	previousTime = glfwGetTime();
+	scaleMat = glm::scale(glm::mat4(1.0f), scaleVec);
 }
 
 void emitter::draw()
 {
 	particleShader.use();
+
+	//set scale matrix uniform
+	unsigned int scaleMatLoc = glGetUniformLocation(particleShader.ID, "scaleMat");
+	glUniformMatrix4fv(scaleMatLoc, 1, GL_FALSE, glm::value_ptr(scaleMat));
+
+	//set color uniform
+	unsigned int colorVecLoc = glGetUniformLocation(particleShader.ID, "fColor");
+	glUniform3f(colorVecLoc, particleColor[0], particleColor[1], particleColor[2]);
+	
+
 	glBindBuffer(GL_ARRAY_BUFFER, instancedTranslationVBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(particle) * numParticles, particleVec.data(), GL_DYNAMIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);

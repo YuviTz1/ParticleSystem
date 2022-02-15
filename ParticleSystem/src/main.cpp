@@ -7,6 +7,7 @@
         
 #include<iostream>
 #include"emitter.h"
+#include"guiLayer.h"
 
 void processInput(GLFWwindow* window)
 {
@@ -24,7 +25,7 @@ int main(void)
     GLFWwindow* window;
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(800, 600, "Particles!!", NULL, NULL);
+    window = glfwCreateWindow(1200, 900, "Particles!!", NULL, NULL);
     if (!window)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -41,9 +42,10 @@ int main(void)
         std::cout << "GLEW init error" << std::endl;
     }
 
-    glViewport(0, 0, 800, 600);
+    glViewport(0, 0, 1200, 900);
 
     emitter particleEmitter;
+    guiLayer gui(window);
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -54,6 +56,10 @@ int main(void)
 
         particleEmitter.update();
         particleEmitter.draw();
+
+        gui.changeColor(particleEmitter.particleColor);
+        gui.changeParameters(particleEmitter.numParticles, particleEmitter.forceMultiplier, particleEmitter.scaleVec);
+        gui.render();
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);

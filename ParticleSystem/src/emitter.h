@@ -15,11 +15,15 @@ class emitter
 {
 public:
 
-	int numParticles = 300;
+	int numParticles = 500;
 	float dt = 0.0001;					//fall down speed
 	float previousTime = 0;				//previous frame time used for updating lifetimes
+	float forceMultiplier = 1.0f;		//for updating force via GUI
 
 	std::vector<particle> particleVec;
+	glm::vec3 scaleVec = glm::vec3(1.0f, 1.0f, 1.0f);
+	glm::mat4 scaleMat = glm::mat4(1.0f);
+	float particleColor[3] = { 1.0f,1.0f,1.0f };
 
 	unsigned int VBO;								  
 	unsigned int VAO;
